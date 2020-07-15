@@ -1,9 +1,16 @@
 <template>
-  <div>
+  <div v-if="ifAuth">
     <router-link tag="div" v-if="model.path" :to="model.path" class="item">{{model.title}}</router-link>
     <div v-else class="item" @click="openList">{{model.title}}</div>
     <transition name="toggle">
-      <multimenu v-for="(item,index) in model.children" :key="index" :model="item" v-show="open" class="children" :class="{openStyle:open}"></multimenu>
+      <multimenu
+        v-for="(item,index) in model.children"
+        :key="index"
+        :model="item"
+        v-show="open"
+        class="children"
+        :class="{openStyle:open}"
+      ></multimenu>
     </transition>
   </div>
 </template>
@@ -21,6 +28,13 @@ export default {
     openList() {
       this.open = !this.open;
     }
+  },
+  computed: {
+    ifAuth() {
+      const nowLevel = sessionStorage.getItem("level");
+      if (nowLevel >= this.model.level) return true;
+      else return false;
+    }
   }
 };
 </script>
@@ -35,12 +49,12 @@ export default {
   color: white;
 }
 
-.children{
+.children {
   max-height: 0px;
 }
 
-.openStyle{
-  max-height:40px;
+.openStyle {
+  max-height: 40px;
 }
 
 .toggle-enter-active {
